@@ -1,6 +1,13 @@
 provider "aws" {
   version = "~> 2.32"
-  region     = var.region
+  region = var.region
+  access_key = var.access_key
+  secret_key = var.secret_key
+}
+
+provider "github" {
+  token = var.github_token
+  individual = true
 }
 
 resource "aws_vpc" "main" {
@@ -12,7 +19,7 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "main" {
-  vpc_id     = aws_vpc.main.id
+  vpc_id = aws_vpc.main.id
   cidr_block = var.subnet
   availability_zone = "${var.region}${var.zone}"
   tags = {
@@ -46,6 +53,15 @@ resource "aws_route_table_association" "default" {
 resource "aws_security_group" "ec2_instance" {
   name = "${var.project_name}-ec2-instance"
   vpc_id = aws_vpc.main.id
+  dynamic "ingress" {
+    for_each = [var.instance_port]
+    content {
+      from_port = ingress.value
+      to_port = ingress.value
+      protocol = "tcp"
+      cidr_blocks = ["${var.ssh_access_ip_range_of_clients}"]
+    }
+  }
   ingress {
     from_port = 22
     to_port = 22
@@ -76,7 +92,7 @@ data "aws_ami" "latest_ubuntu" {
     values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
   }
   filter {
-    name   = "virtualization-type"
+    name = "virtualization-type"
     values = ["hvm"]
   }
 }
@@ -89,11 +105,12 @@ resource "aws_instance" "server" {
   subnet_id = aws_subnet.main.id
   vpc_security_group_ids = [aws_security_group.ec2_instance.id]
   associate_public_ip_address = true
+  user_data = file("script.sh")
 
   root_block_device {
     delete_on_termination = true
     volume_type = "gp2"
-    volume_size = 30
+    volume_size = 18
   }
   tags = {
       Name = "${var.project_name}-server"
