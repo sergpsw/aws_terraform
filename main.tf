@@ -5,10 +5,10 @@ provider "aws" {
   secret_key = var.secret_key
 }
 
-provider "github" {
-  token = var.github_token
-  individual = true
-}
+# provider "github" {
+#   token = var.github_token
+#   individual = true
+# }
 
 resource "aws_vpc" "main" {
   cidr_block = var.subnet
@@ -105,7 +105,17 @@ resource "aws_instance" "server" {
   subnet_id = aws_subnet.main.id
   vpc_security_group_ids = [aws_security_group.ec2_instance.id]
   associate_public_ip_address = true
-  user_data = file("script.sh")
+  user_data = templatefile("user_data.sh.tpl", {
+    token = var.github_token,
+    DUMP_FILE = var.DUMP_FILE,
+    DB_NAME = var.DB_NAME,
+    DB_USER = var.DB_USER,
+    DB_PASSWORD = var.DB_PASSWORD,
+    DB_HOST = var.DB_HOST,
+    DB_PORT = var.DB_PORT,
+    SERVER_PORT = var.SERVER_PORT,
+    PHP_PORT = var.PHP_PORT
+  })
 
   root_block_device {
     delete_on_termination = true

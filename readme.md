@@ -7,7 +7,7 @@ Use the following instruction to deploy single server in own VPC on AWS cloud.
 - `ssh_public_key` your public key ;
 - `region` define AWS region to work with;
 - `access_key` and `secret_key` access_key and secret_key your AWS user.
-5. Another variables can be left as they are without any changes.
+5. Can also change the docker related variable (they uppercase). Another variables can be left as they are without any changes.
 6. When scenario is ready, at first run `terraform init` to download terraform dependencies.
 7. Run `terraform plan` to see what will be updated or added.
 8. Run `terraform apply` to apply the scenario.

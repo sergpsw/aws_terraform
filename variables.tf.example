@@ -19,3 +19,20 @@ variable "instance_type" { default = "t2.micro" }
 variable "instance_port" { default = "80" }
 
 variable "github_token" { default = "" }
+
+#Variable for Docker
+variable "DUMP_FILE" { default = "dump.sql" }
+
+variable "DB_NAME" { default = "db_test" }
+
+variable "DB_USER" { default = "test" }
+
+variable "DB_PASSWORD" { default = "password" }
+
+variable "DB_HOST" { default = "mysql" }
+
+variable "DB_PORT" { default = "3306" }
+
+variable "SERVER_PORT" { default = "80" }
+
+variable "PHP_PORT" { default = "9000" }

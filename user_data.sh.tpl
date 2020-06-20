@@ -17,11 +17,9 @@ if [[ "ls -a  /etc/debian_version" ]]
     curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
     
-    # git clone https://${TF_VAR_github_token}:x-oauth-basic@github.com/sergpsw/docker-LEMP.git
-    # git clone https://github.com/sergpsw/docker-LEMP.git
-    git clone https://ed12551a357c9b4b16cead4a403b589f81767e29:x-oauth-basic@github.com/sergpsw/docker-LEMP.git
+    git clone https://${token}:x-oauth-basic@github.com/sergpsw/docker-LEMP.git
     cd docker-LEMP
-    cp .env.example .env
+    echo -ne "DUMP_FILE=${DUMP_FILE} \nDB_NAME=${DB_NAME} \nDB_USER=${DB_USER} \nDB_PASSWORD=${DB_PASSWORD} \nDB_HOST=${DB_HOST} \nDB_PORT=${DB_PORT} \nSERVER_PORT=${SERVER_PORT} \nPHP_PORT=${PHP_PORT}" > .env
     docker-compose build
     docker-compose up -d
     docker exec -T mysql mysql -uroot -proot ${DB_NAME} < dump.sql
