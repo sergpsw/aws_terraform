@@ -22,7 +22,6 @@ if [[ "ls -a  /etc/debian_version" ]]
     echo -ne "DUMP_FILE=${DUMP_FILE} \nDB_NAME=${DB_NAME} \nDB_USER=${DB_USER} \nDB_PASSWORD=${DB_PASSWORD} \nDB_HOST=${DB_HOST} \nDB_PORT=${DB_PORT} \nSERVER_PORT=${SERVER_PORT} \nPHP_PORT=${PHP_PORT}" > .env
     docker-compose build
     docker-compose up -d
-    docker exec -T mysql mysql -uroot -proot ${DB_NAME} < dump.sql
   else
     echo "This example works for OS Debian family!"
     exit 1
